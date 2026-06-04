@@ -1,6 +1,8 @@
+import { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router";
 import type { Route } from "./+types/results";
 import { questions } from "~/data/questions";
+import { useHighScore } from "~/hooks/useHighScore";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -12,10 +14,18 @@ export function meta({}: Route.MetaArgs) {
 export default function Results() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { score = 0, total = questions.length } = location.state as {
+  const { score = 0, total = questions.length } = (location.state as {
     score: number;
     total: number;
-  } ?? {};
+  }) ?? {};
+
+  const { highScore, updateHighScore, resetHighScore, isNewRecord } =
+    useHighScore();
+  const isRecord = isNewRecord(score);
+
+  useEffect(() => {
+    updateHighScore(score);
+  }, [score, updateHighScore]);
 
   const percentage = Math.round((score / total) * 100);
 
@@ -40,6 +50,11 @@ export default function Results() {
     <div className="min-h-screen bg-gray-950 flex items-center justify-center p-4">
       <div className="w-full max-w-lg">
         <div className="bg-gray-900 rounded-2xl border border-gray-800 p-8 text-center">
+          {isRecord && (
+            <div className="inline-block px-4 py-1 mb-4 bg-yellow-500/20 border border-yellow-500/40 rounded-full text-yellow-400 text-sm font-semibold">
+              ¡Nuevo récord!
+            </div>
+          )}
           <div className="text-6xl mb-6">{emoji}</div>
 
           <h1 className="text-3xl font-bold text-white mb-2">Quiz Completado</h1>
@@ -77,7 +92,21 @@ export default function Results() {
             </div>
           </div>
 
-          <p className="text-2xl font-bold text-purple-400 mb-8">{percentage}%</p>
+          <p className="text-2xl font-bold text-purple-400 mb-6">{percentage}%</p>
+
+          <div className="flex items-center justify-center gap-6 mb-8 p-4 bg-gray-950/50 rounded-xl border border-gray-800">
+            <div className="text-center">
+              <p className="text-xs text-gray-500 mb-1">Puntaje</p>
+              <p className="text-xl font-bold text-white">
+                {score}/{total}
+              </p>
+            </div>
+            <div className="w-px h-10 bg-gray-800" />
+            <div className="text-center">
+              <p className="text-xs text-gray-500 mb-1">Mejor puntaje</p>
+              <p className="text-xl font-bold text-purple-400">{highScore}</p>
+            </div>
+          </div>
 
           <button
             onClick={() => navigate("/quiz")}
@@ -88,9 +117,16 @@ export default function Results() {
 
           <button
             onClick={() => navigate("/")}
-            className="w-full py-3 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-300 font-semibold transition-colors cursor-pointer"
+            className="w-full py-3 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-300 font-semibold transition-colors cursor-pointer mb-3"
           >
             Volver al inicio
+          </button>
+
+          <button
+            onClick={resetHighScore}
+            className="w-full py-2 rounded-xl bg-transparent border border-gray-700 hover:border-red-500/50 text-gray-500 hover:text-red-400 text-sm transition-colors cursor-pointer"
+          >
+            Resetear récord
           </button>
         </div>
       </div>

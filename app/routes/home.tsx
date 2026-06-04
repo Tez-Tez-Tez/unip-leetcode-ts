@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router";
 import type { Route } from "./+types/home";
+import { useHighScore } from "~/hooks/useHighScore";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -10,6 +11,7 @@ export function meta({}: Route.MetaArgs) {
 
 export default function Home() {
   const navigate = useNavigate();
+  const { highScore } = useHighScore();
 
   return (
     <div className="min-h-screen bg-gray-950 flex items-center justify-center p-4">
@@ -21,6 +23,12 @@ export default function Home() {
             Pon a prueba tus conocimientos sobre algoritmos clásicos
           </p>
         </div>
+
+        {highScore > 0 && (
+          <div className="inline-flex items-center gap-2 px-4 py-2 mb-6 bg-purple-500/10 border border-purple-500/30 rounded-full text-purple-400 text-sm">
+            <span>🏆 Mejor puntaje: {highScore}</span>
+          </div>
+        )}
 
         <div className="bg-gray-900 rounded-2xl border border-gray-800 p-8 mb-6">
           <h2 className="text-xl font-semibold text-white mb-4">¿Cómo funciona?</h2>

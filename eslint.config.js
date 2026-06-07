@@ -41,6 +41,12 @@ export default [
     },
   },
   {
-    ignores: ["build/", ".react-router/", "node_modules/", "*.test.ts", "*.test.tsx"],
+    ignores: [
+      "build/",
+      ".react-router/",
+      "node_modules/",
+      "*.test.ts",
+      "*.test.tsx",
+    ],
   },
 ];

@@ -5,18 +5,10 @@ import { questions as rawQuestions } from "~/data/questions";
 import { useTimer } from "~/hooks/useTimer";
 import { useTheme } from "~/hooks/useTheme";
 import { useSound } from "~/hooks/useSound";
+import { shuffleArray } from "~/lib/shuffle";
 
 const TIMER_SECONDS = 15;
 const TOTAL_QUESTIONS = rawQuestions.length;
-
-function shuffleArray<T>(arr: T[]): T[] {
-  const copy = [...arr];
-  for (let i = copy.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [copy[i], copy[j]] = [copy[j], copy[i]];
-  }
-  return copy;
-}
 
 function shuffleQuestion(q: (typeof rawQuestions)[number]) {
   const correctValue = q.options[q.correctIndex];
